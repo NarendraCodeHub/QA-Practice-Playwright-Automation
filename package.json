@@ -1,0 +1,22 @@
+{
+  "name": "qa-practice-playwright-automation",
+  "version": "1.0.0",
+  "description": "Automation testing scripts for the QA Practice website using Playwright. This repository demonstrates various automation testing scenarios, including form handling, navigation, assertions, and more.",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NarendraCodeHub/QA-Practice-Playwright-Automation.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NarendraCodeHub/QA-Practice-Playwright-Automation/issues"
+  },
+  "homepage": "https://github.com/NarendraCodeHub/QA-Practice-Playwright-Automation#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "@types/node": "^22.10.5"
+  }
+}
