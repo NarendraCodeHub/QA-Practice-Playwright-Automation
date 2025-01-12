@@ -4,7 +4,6 @@ class LoginPage {
         this.emailInput = page.locator('#email');
         this.passwordInput = page.locator('#password');
         this.submitButton = page.getByRole('button', { name: 'Submit' });
-        //this.errorMessage = page.getByText('Bad credentials! Please try');
     }
 
     async navigate() {
