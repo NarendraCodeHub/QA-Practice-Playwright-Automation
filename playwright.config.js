@@ -7,11 +7,11 @@ const { defineConfig, devices } = require('@playwright/test');
  */
 // require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 
-/**
+/**SS
  * @see https://playwright.dev/docs/test-configuration
  */
 module.exports = defineConfig({
-  testDir: './tests',
+  testDir: './tests/Forms',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

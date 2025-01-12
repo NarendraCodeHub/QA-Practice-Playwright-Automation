@@ -1,56 +1,45 @@
 const { test, expect } = require('@playwright/test');
+const LoginPage = require('../../pages/LoginPage');
 
-// Verify the page title
-test('Verify page title: QA Practice | Learn with RV', async ({ page }) => {
-    await page.goto('https://qa-practice.netlify.app/auth_ecommerce');
+test.describe('Login Page Tests', () => {
+    let loginPage;
 
-    // Verify that the page title matches the expected value
-    await expect(page).toHaveTitle('QA Practice | Learn with RV');
-});
+    test.beforeEach(async ({ page }) => {
+        loginPage = new LoginPage(page);
+        await loginPage.navigate();
+    });
 
-// Test form submission without entering any fields
-test('Verify form validation for empty fields', async ({ page }) => {
-    await page.goto('https://qa-practice.netlify.app/auth_ecommerce');
+    test('Verify page title', async () => {
+        await expect(loginPage.page).toHaveTitle('QA Practice | Learn with RV');
+    });
 
-    // Attempt to submit the form without filling in the fields
-    await page.getByRole('button', { name: 'Submit' }).click();
+    test('Validate email field for invalid format', async ({ page }) => {
+        await loginPage.emailInput.fill('invalidemail'); // No '@' or domain
+        await loginPage.submitButton.click();
+        const validationMessage = await loginPage.emailInput.evaluate(input => input.validationMessage);
+        const browserName = test.info().project.name;
 
-    // Check if the error message is displayed
-    const errorMessage = page.getByText('Bad credentials! Please try');
-    await expect(errorMessage).toBeVisible();
-    await expect(errorMessage).toHaveText(
-        "Bad credentials! Please try again! Make sure that you've registered."
-    );
-});
+        // Browser-specific validation message check
+        if (browserName === 'chromium') {
+            expect(validationMessage).toBe("Please include an '@' in the email address. 'invalidemail' is missing an '@'.");
+        } else if (browserName === 'firefox') {
+            expect(validationMessage).toBe("Please enter an email address.");
+        } else if (browserName === 'webkit') {
+            expect(validationMessage).toBe("Enter an email address");
+        }
+    });
 
-// Validate the form with invalid credentials
-test('Verify form validation for invalid credentials', async ({ page }) => {
-    await page.goto('https://qa-practice.netlify.app/auth_ecommerce');
+    test('Validate login with invalid credentials', async () => {
+        await loginPage.login('test@gmail.com', 'wrongpassword');
+        const errorMessage = await loginPage.getErrorMessage();
+        await expect(errorMessage).toBeVisible();
+        await expect(errorMessage).toHaveText("Bad credentials! Please try again! Make sure that you've registered.");
+    });
 
-    // Fill the form with invalid email and password
-    await page.locator('#email').fill('test@gmail.com');
-    await page.locator('#password').fill('test@123');
-    await page.getByRole('button', { name: 'Submit' }).click();
-
-    // Check if the error message is displayed
-    const errorMessage = page.getByText('Bad credentials! Please try');
-    await expect(errorMessage).toBeVisible();
-    await expect(errorMessage).toHaveText(
-        "Bad credentials! Please try again! Make sure that you've registered."
-    );
-});
-
-// Validate login functionality with valid credentials
-test('Verify login with valid credentials', async ({ page }) => {
-    await page.goto('https://qa-practice.netlify.app/auth_ecommerce');
-
-    // Fill the form with valid email and password
-    await page.locator('#email').fill('admin@admin.com');
-    await page.locator('#password').fill('admin123');
-    await page.getByRole('button', { name: 'Submit' }).click();
-
-    // Verify the presence of the shopping cart page
-    const shoppingCart = page.locator('text=SHOPPING CART');
-    await expect(shoppingCart).toBeVisible();
-    await expect(shoppingCart).toHaveText('SHOPPING CART');
+    test('Validate login with valid credentials', async () => {
+        await loginPage.login('admin@admin.com', 'admin123');
+        const shoppingCart = await loginPage.page.locator('text=SHOPPING CART');
+        await expect(shoppingCart).toBeVisible();
+        await expect(shoppingCart).toHaveText("SHOPPING CART");
+    });
 });
