@@ -18,7 +18,6 @@ test.describe('Recover Password with user data', () => {
 
         // Validate error message for empty fields
         const validationMessage = await recoverPassword.emailInput.evaluate(input => input.validationMessage);
-        //expect(validationMessage).toBe('Please fill out this field.');
         const browserName = test.info().project.name;
 
         // Browser-specific validation message check
