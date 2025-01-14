@@ -12,13 +12,13 @@ test.describe('Recover Password with user data', () => {
         await recoverPassword.navigate();
     });
 
-    test('should require mandatory fields (empty form)', async () => {
+    test('should require mandatory fields (empty form)', async ({ page }) => {
         // Submit the form without filling any fields
         await recoverPassword.submitdata();
 
         // Validate error message for empty fields
         const validationMessage = await recoverPassword.emailInput.evaluate(input => input.validationMessage);
-        const browserName = test.info().project.name;
+        const browserName = page.context().browser().browserType().name();
 
         // Browser-specific validation message check
         if (browserName === 'chromium' || browserName === 'firefox') {
@@ -29,7 +29,7 @@ test.describe('Recover Password with user data', () => {
     });
 
     test('should successfully recover password with entered data', async () => {
-        //user to enter email
+        // User to enter email
         const email = 'test@gmail.com';
 
         // Fill the email field with the entered data
