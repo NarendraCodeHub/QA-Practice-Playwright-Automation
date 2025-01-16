@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 const { faker } = require('@faker-js/faker');
 const RegisterPage = require('../../pages/RegisterPage');
 
-let userData = {}; // Global variable to store user data for reuse
+let userData = {}; 
 
 test.describe('Register Page Tests with Random Data', () => {
     let registerPage;
@@ -21,7 +21,15 @@ test.describe('Register Page Tests with Random Data', () => {
 
         // Validate error message for empty fields
         const validationMessage = await registerPage.emailInput.evaluate(input => input.validationMessage);
-        expect(validationMessage).toBe("Please fill out this field.");    
+        const browserName = test.info().project.name;
+
+        if (browserName === 'chromium') {
+            expect(validationMessage).toBe("Please fill out this field.");    
+        } else if (browserName === 'firefox') {
+            expect(validationMessage).toBe("Please fill out this field.");    
+        } else if (browserName === 'webkit') {
+            expect(validationMessage).toBe("Fill out this field");    
+        }
     });
 
     test('should successfully register with valid data', async () => {
